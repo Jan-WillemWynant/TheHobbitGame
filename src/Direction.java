@@ -8,4 +8,5 @@ public enum Direction {
     public String getDirectionName(){
         return this.directionName;
     }
+
 }

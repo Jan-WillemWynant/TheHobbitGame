@@ -25,7 +25,7 @@ public class Game {
             daysLeft--; //assuming every step north, east etc. takes 1 day
         }
         else{
-            System.out.println("The terrain is too rugged. You can not travel in this direction.\nType 'help directions' to find out what directions you can travel to from your current location.");
+            System.out.println("You can not travel in this direction.\nType 'help directions' to find out what directions you can travel to from your current location.");
         }
     }
 

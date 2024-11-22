@@ -12,7 +12,7 @@ public class Location {
     private Map<Direction, Boolean> canTravelTo;
     private List<Item> itemsInLocation;
     private List<GameCharacter> charactersInLocation;
-    private boolean alreadyVisited=false; //boolean which stores whether the location has already been visited. (Possible functionality: print full description of location only when location visited for the first time)
+    private boolean alreadyVisited=false; //boolean which stores whether the location has already been visited. (Possible functionality: print full description of location only when location visited for the first time, print location name if player looks to this direction only if player has already visited the location before)
     //Thought I just had. Once an item is picked up, it isn't in itemsInLocation anymore.
     //description of location should also change. Could do this through a Map<Item, String> toBeRemovedIfItemPickedUp. Which holds the string segment to be removed from the location description if an item is picked up.
 
