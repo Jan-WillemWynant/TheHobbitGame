@@ -5,8 +5,22 @@ public enum Direction {
         this.directionName=name;
     }
 
+    /*
+     *Returns the name of the direction.
+     */
     public String getDirectionName(){
         return this.directionName;
+    }
+
+    /*
+     *Returns the opposite direction (so if called on NORTH, returns SOUTH).
+     */
+    public Direction getOppositeDirection(){
+        if (this==NORTH) return SOUTH;
+        if (this==EAST) return WEST;
+        if (this==SOUTH) return NORTH;
+        if (this==WEST) return EAST;
+        return null;
     }
 
 }
