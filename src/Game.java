@@ -12,7 +12,7 @@ public class Game {
 
     //the enum GeneralCommand will hold the general commands which are handled in the Game class (such as 'travel', 'look' etc.).
     private enum GeneralCommand{
-        TRAVEL(new String[]{"travel","go"}),
+        TRAVEL(new String[]{"travel"}),
         LOOK(new String[]{"look"}),
         EXAMINE(new String[]{"examine","inspect"}),
         PICK_UP(new String[]{"pick up","take"}),
@@ -327,7 +327,7 @@ public class Game {
         //The hierarchy of handling a command is as follows:
         //first it is checked whether any of the items in inventory implements SpecificCommandHandler, and if they do, whether the Item handles the inputted command.
         //After this it is checked whether there are any Item objects in the currentLocation which implement SpecificCommandHandler, and if any of them handle the command inputted.
-        //Then it is checked whether any Character objects which implement SpecificCommandHanlder, handle the inputted command.
+        //Then it is checked whether any Character objects which implement SpecificCommandHandler, handle the inputted command.
         //Then it is checked if the currentLocation implements SpecificCommandHandler and if so, whether it handles the inputted command.
         //If none of the aforementioned, handle the command, it is checked if it is one of the general commands, and thus handled in Game itself.
         //This also means that commands can be 'overloaded'. If a specific location requires another functionality for for example 'look north', this can be done by handling 'look north' in the Location object (provided the subclass implements SpecificCommandHandler), as this specific command will be checked first.

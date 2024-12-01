@@ -61,7 +61,9 @@ public class Location {
 
     public void removeItem(Item item){
         itemsInLocation.remove(item);
-        description=description.replace(toBeRemovedIfItemPickedUp.get(item),""); //besides removing the item from the Items List, should also adjust the description of the location so the item doesn't appear in the description anymore.
+        if (toBeRemovedIfItemPickedUp.get(item)!=null){
+            description=description.replace(toBeRemovedIfItemPickedUp.get(item),""); //besides removing the item from the Items List, should also adjust the description of the location so the item doesn't appear in the description anymore.
+        }
     }
 
     public void addCharacter(GameCharacter character){
