@@ -1,10 +1,15 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+/*
+ * Enedwaith is a special location which handles commands specific to the location Enedwaith.
+ * There is a cave in Enedwaith which the player can enter and exit.
+ * Once in the cave, the player can see and pick up the Elvish Sword (the Elvish Sword which turns blue when approaching orcs).
+ */
 
 public class Enedwaith extends Location implements SpecificCommandHandler {
 
-    private boolean inCave;
-    private boolean swordHasBeenPickedUp;
+    private boolean inCave; //this boolean will store whether the player is currently in the cave or not.
+    private boolean swordHasBeenPickedUp; //this boolean will store whether the player has already picked up the sword in a previous visit to the cave.
 
     public Enedwaith(String name) {
         super(name);
@@ -13,15 +18,15 @@ public class Enedwaith extends Location implements SpecificCommandHandler {
     }
 
     //This enum will contain the specific commands this location handles.
-    private enum SpecificCommand2 {
+    private enum SpecificCommand {
         GO_INTO(new String[]{"go into the cave", "go into cave", "enter the cave", "enter cave"}),
-        GO_OUT(new String[]{"go out the cave", "go out cave", "leave the cave", "leave cave"}),
+        GO_OUT(new String[]{"go out the cave", "go out cave", "leave the cave", "leave cave","exit cave", "exit the cave"}),
         TRAVEL(new String[]{"travel"}),
         LOOK(new String[]{"look"});
 
         private String[] possibleDenominations;
 
-        SpecificCommand2(String[] possibleDenominations) {
+        SpecificCommand(String[] possibleDenominations) {
             this.possibleDenominations = possibleDenominations;
         }
 
@@ -48,8 +53,8 @@ public class Enedwaith extends Location implements SpecificCommandHandler {
 
     @Override
     public boolean specificCommandHandler(String[] command, Game game) {
-        SpecificCommand2 inputCommand = null;
-        for (SpecificCommand2 specificCommand : SpecificCommand2.values()) {
+        SpecificCommand inputCommand = null;
+        for (SpecificCommand specificCommand : SpecificCommand.values()) {
             if (specificCommand.commandInvoked(command)) {
                 inputCommand = specificCommand;
                 break;
@@ -57,7 +62,7 @@ public class Enedwaith extends Location implements SpecificCommandHandler {
         }
         if (inputCommand == null) return false;
 
-        switch (inputCommand) {//switch statement is a bit overkill, since item only implements one command, but could be useful if there was a need to add other commands to the item later.
+        switch (inputCommand) {
             case GO_INTO:
                 goInto();
                 break;
@@ -65,14 +70,14 @@ public class Enedwaith extends Location implements SpecificCommandHandler {
                 goOut();
                 break;
             case TRAVEL:
-                if (!inCave) {
+                if (!inCave) {  //if the player is not in the cave, the general travel commands in Game should be applied. So if the player is not in the cave, the travel command is not handled in Enedwaith.
                     return false;
                 } else {
                     travel();
                     return true;
                 }
             case LOOK:
-                if (!inCave) {
+                if (!inCave) { //if the player is not in the cave, the general look commands in Game should be applied. So if the player is not in the cave, the look command is not handled in Enedwaith.
                     return false;
                 } else {
                     look();
@@ -87,11 +92,13 @@ public class Enedwaith extends Location implements SpecificCommandHandler {
             System.out.println("You are already inside the cave.");
         } else {
             inCave = true;
-            Item elvishSword = new Item("Elvish Sword", true);
-            elvishSword.setDescription("The sword is small and light, with a blade that glimmers faintly, even in the dimmest light. Its edges are razor-sharp, and elegant Elvish runes are etched along the blade. \nThe sword feels strong and alive, as if it carries the wisdom and craftsmanship of an ancient age.");
-            elvishSword.setPossibleDenominations(new String[]{"sword", "blade", "the sword", "the blade"});
-            this.addItem(elvishSword);
-            System.out.println("Now, you are inside the cave.");
+            if (!swordHasBeenPickedUp) { //If the player hasn't picked up the sword in a previous visit to the cave, the Elvish Sword is added to the Enedwaith location when the player enters the cave.
+                Item elvishSword = new Item("Elvish Sword", true);
+                elvishSword.setDescription("The sword is small and light, with a blade that glimmers faintly, even in the dimmest light. Its edges are razor-sharp, and elegant Elvish runes are etched along the blade. \nThe sword feels strong and alive, as if it carries the wisdom and craftsmanship of an ancient age.");
+                elvishSword.setPossibleDenominations(new String[]{"sword", "blade", "the sword", "the blade"});
+                this.addItem(elvishSword);
+                System.out.println("Now, you are inside the cave.");
+            }
         }
     }
 
@@ -108,8 +115,8 @@ public class Enedwaith extends Location implements SpecificCommandHandler {
                 }
             }
             if (removedSword == null) {
-                swordHasBeenPickedUp = true;
-            } else if (removedSword != null) {
+                swordHasBeenPickedUp = true; //if at the point the player leaves the location, the sword is no longer there, it means he has picked it up in the meantime.
+            } else if (removedSword != null) {  //if the sword is still there when the player leaves the cave, we have to remove it from the Enedwaith location.
                 removeItem(removedSword);
             }
             System.out.println("You have left the cave now.");
@@ -121,18 +128,17 @@ public class Enedwaith extends Location implements SpecificCommandHandler {
         if (inCave) {
             System.out.println("You are in the cave. First exit the cave before you can travel.");
         }
-
     }
 
     public void look() {
-
-        for (Item item : this.getItemsInLocation()) {
+        //the look method gives the description of the cave to the player (note that when the player types 'look north', 'look east', he also receives this description. He has to leave the cave to get the descriptions of the locations north/east... of Enedwaith . The description of the cave is different dependent on whether the sword is still there or not.
+        for (Item item : this.getItemsInLocation()) {  //so first loop through itemsInLocation and check if the Elvish Sword is still there.
             if (item.getName().equals("Elvish Sword")) {
-                System.out.println("The cave feels empty and still, its cool, damp air carrying the faint echoes of your movements. The cave feels empty and still, its cool, damp air carrying the faint echoes of your movements. The faint glimmer that once caught your attention is now gone, leaving only bare stone.");
+                System.out.println("Inside the dimly lit cave, the air feels cool and slightly damp. The faint smell of earth and stone surrounds you. As your eyes adjust to the shadows, you notice something gleaming faintly near the back of the cave.\nIt's a sword which reflects the little light in the cave.");
                 return;
             }
         }
-        System.out.println("Inside the dimly lit cave, the air feels cool and slightly damp. The faint smell of earth and stone surrounds you. As your eyes adjust to the shadows, you notice something gleaming faintly near the back of the cave.");
+        System.out.println("The cave feels empty and still, its cool, damp air carrying the faint echoes of your movements. The faint glimmer that once caught your attention is now gone, leaving only bare stone.");
 
     }
 }

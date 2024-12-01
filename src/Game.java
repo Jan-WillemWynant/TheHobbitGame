@@ -197,10 +197,11 @@ public class Game {
         Location theGreatSea = new Location("The Great Sea");
         theGreatSea.setDescriptionFromAfar("The Great Sea spreads wide and endless, its surface sparkling under the sun.");
         enedwaith.addNeighboringLocation(Direction.WEST, theGreatSea, false);
-//        Item elvishSword = new Item("Elvish Sword", true);
-//        elvishSword.setDescription("The sword is small and light, with a blade that glimmers faintly, even in the dimmest light. Its edges are razor-sharp, and elegant Elvish runes are etched along the blade. \nThe sword feels strong and alive, as if it carries the wisdom and craftsmanship of an ancient age.");
-//        elvishSword.setPossibleDenominations(new String[]{"sword", "blade", "the sword", "the blade"});
-//        enedwaith.addItem(elvishSword);
+        //The adding of the Elvish Sword to Enedwaith is now handled in Enedwaith itself.
+        //Item elvishSword = new Item("Elvish Sword", true);
+        //elvishSword.setDescription("The sword is small and light, with a blade that glimmers faintly, even in the dimmest light. Its edges are razor-sharp, and elegant Elvish runes are etched along the blade. \nThe sword feels strong and alive, as if it carries the wisdom and craftsmanship of an ancient age.");
+        //elvishSword.setPossibleDenominations(new String[]{"sword", "blade", "the sword", "the blade"});
+        // enedwaith.addItem(elvishSword);
 
         Location gapOfRohan = new Location("Gap of Rohan");
         enedwaith.addNeighboringLocation(Direction.SOUTH, gapOfRohan, true);
