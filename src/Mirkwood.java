@@ -1,6 +1,6 @@
 public class Mirkwood extends Location implements SpecificCommandHandler {
 
-    public Mirkwood(String name){
+    public Mirkwood(String name) {
         super(name);
     }
 

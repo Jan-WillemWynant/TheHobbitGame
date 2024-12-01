@@ -1,6 +1,6 @@
 public class DoorsOfDurin extends Location implements SpecificCommandHandler {
 
-    public DoorsOfDurin(String name){
+    public DoorsOfDurin(String name) {
         super(name);
     }
 

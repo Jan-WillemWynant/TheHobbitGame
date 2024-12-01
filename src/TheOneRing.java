@@ -1,7 +1,7 @@
-public class TheOneRing extends Item implements SpecificCommandHandler{
+public class TheOneRing extends Item implements SpecificCommandHandler {
 
-    public TheOneRing(){
-        super("The One Ring",true);
+    public TheOneRing() {
+        super("The One Ring", true);
     }
 
     @Override
