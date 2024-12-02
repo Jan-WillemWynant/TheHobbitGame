@@ -20,7 +20,7 @@ public class Enedwaith extends Location implements SpecificCommandHandler {
     //This enum will contain the specific commands this location handles.
     private enum SpecificCommand {
         GO_INTO(new String[]{"go into the cave", "go into cave", "enter the cave", "enter cave"}),
-        GO_OUT(new String[]{"go out the cave", "go out cave", "leave the cave", "leave cave","exit cave", "exit the cave"}),
+        GO_OUT(new String[]{"go out the cave", "go out cave", "go out of the cave", "leave the cave", "leave cave","exit cave", "exit the cave"}),
         TRAVEL(new String[]{"travel"}),
         LOOK(new String[]{"look"});
 

@@ -197,11 +197,6 @@ public class Game {
         Location theGreatSea = new Location("The Great Sea");
         theGreatSea.setDescriptionFromAfar("The Great Sea spreads wide and endless, its surface sparkling under the sun.");
         enedwaith.addNeighboringLocation(Direction.WEST, theGreatSea, false);
-        //The adding of the Elvish Sword to Enedwaith is now handled in Enedwaith itself.
-        //Item elvishSword = new Item("Elvish Sword", true);
-        //elvishSword.setDescription("The sword is small and light, with a blade that glimmers faintly, even in the dimmest light. Its edges are razor-sharp, and elegant Elvish runes are etched along the blade. \nThe sword feels strong and alive, as if it carries the wisdom and craftsmanship of an ancient age.");
-        //elvishSword.setPossibleDenominations(new String[]{"sword", "blade", "the sword", "the blade"});
-        // enedwaith.addItem(elvishSword);
 
         Location gapOfRohan = new Location("Gap of Rohan");
         enedwaith.addNeighboringLocation(Direction.SOUTH, gapOfRohan, true);
@@ -224,7 +219,7 @@ public class Game {
         doorsOfDurin.setDescriptionFromAfar("At the base of the towering Misty Mountains, you notice a flat wall of stone that stands out from the rugged cliffside. The faint outline of a door is visible. \nYou also notice an imposing figure. You can’t discern the person, but you expect to find wise words for your travels there.");
         GameCharacter gandalf = new GameCharacter("Gandalf", true);
         doorsOfDurin.addCharacter(gandalf);
-        //gandalf.setDialogue("something");
+        gandalf.setDialogue("Hello Bilbo, I see you have lost the Dwarves. You absolutely must rejoin them in Erebor in time. The fastest way is here through these doors into the Mines of Moria.\nHowever, I see you don't have any weapons. I will not send you on your way like this. You must first travel back further west.\nI have heard of a cave further west where you should find an Elvish sword. Go and return with the sword. I will open these doors then for you.");
 
         doorsOfDurin.addNeighboringLocation(Direction.NORTH, mistyMountains, false);
         doorsOfDurin.addNeighboringLocation(Direction.SOUTH, mistyMountains, false);
@@ -608,8 +603,18 @@ public class Game {
         //
     }
 
+    /*
+     * Method increases the strength level of the player with a certain amount.
+     */
     public void increaseStrength(int amount) {
         strengthLevel += amount;
+    }
+
+    /*
+     * Method returns the items the player has in inventory currently.
+     */
+    public List<Item> getItemsInInventory(){
+        return itemsInInventory;
     }
 
 }

@@ -43,9 +43,9 @@ public class Location {
         }
     }
 
-    //public void setReachability(Direction direction, Boolean reachable){
-    //    canTravelTo.put(direction, reachable);
-    //}
+    public void setReachability(Direction direction, Boolean reachable){
+        canTravelTo.put(direction, reachable);
+    }
 
     public boolean hasOrcs() {
         return hasOrcs;
@@ -68,6 +68,10 @@ public class Location {
 
     public void addCharacter(GameCharacter character) {
         charactersInLocation.add(character);
+    }
+
+    public void removeCharacter(GameCharacter character){
+        charactersInLocation.remove(character);
     }
 
     public String getName() {

@@ -58,6 +58,7 @@ public class RadagastsPotion extends Item implements SpecificCommandHandler {
         switch (inputCommand) { //switch statement is a bit overkill, since item only implements one command, but could be useful if there was a need to add other commands to the item later.
             case DRINK:
                 drink(game);
+                break;
         }
         return true;
     }
