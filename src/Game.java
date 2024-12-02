@@ -1,8 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Random;
+import java.util.*;
 
 public class Game {
     private Location currentLocation; //the current location the player is in.
@@ -463,8 +459,10 @@ public class Game {
                             return;
                         } else if (command[nextIndexToInspect].equals("directions")) { // if the player inputted 'help directions', we call the helpWithDirections() method.
                             helpWithDirections();
+                            return;
                         } else { //if the player typed 'help' plus something else, we just display the general help() message.
                             help();
+                            return;
                         }
 
                     case INVENTORY:
@@ -618,18 +616,23 @@ public class Game {
         //print the most general part of the game
         System.out.println("You are Bilbo Baggins, a hobbit, and you are on a quest with a company of dwarves to reclaim their homeland on the Lonely Mountain. Unfortunately, you have lost the company of dwarves.\nAs Bilbo Baggins, you know the following things: the dwarves will meet atop the Lonely Mountain at the last light of Durin’s day, which is in 32 days. It is your goal to join them.\n");
         System.out.println("Many obstacles and perils lie ahead, and you will need to pick up tools and encounter friends and foes to bring your journey to a good end. \nYou can always look at what is in your pockets by typing ‘inventory’.\n");
-        System.out.println("In order to travel ‘north’, ‘east’, and so forth, you can type ‘travel north’, ‘travel east’ and so on. Each time you travel north or in another direction, it costs you a day. It is therefore wise to first ‘look north’, ‘look east’… before travelling. \nYou can examine the item by typing 'examine' and then writing the name of the item. ");
-        System.out.println("Some items and some specific locations have their own specific commands.");
-        System.out.println("Remember that there's only " + daysLeft + "days left for you.");
+        System.out.println("In order to travel ‘north’, for instance, you can type ‘travel north’. Each time you travel north or in another direction, it costs you a day. It is therefore wise to first ‘look north’, ‘look east’… before travelling.\nYou can examine the item by typing 'examine' and then writing the name of the item. You can also talk with other characters by typing 'talkToCharacter' and then the name of that specific character.");
+        System.out.println("Some items and some specific locations have their own specific commands.\n");
+        System.out.println("Remember that there's only " + daysLeft + " days left for you.\n");
         System.out.println("You can at any moment type ‘help’ to get information on the possible commands.\nGood luck on your journey!");
-
     }
 
     /*
      * Method displays the directions the player can travel in from the current location.
      */
     public void helpWithDirections() {
-        //
+        List<String> reachableDirection = new ArrayList<>();
+        for (Direction direction : Direction.values()) {
+            if (currentLocation.canTravelTo(direction)) {
+                reachableDirection.add(direction.name().toLowerCase());
+            }
+        }
+        System.out.print("You can travel " + String.join(", ", reachableDirection) + ".");
     }
 
     /*
