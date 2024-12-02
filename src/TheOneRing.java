@@ -14,8 +14,8 @@ public class TheOneRing extends Item implements SpecificCommandHandler {
     //this enum will contain the specific commands this Item handles.
     private enum SpecificCommand {
         WEAR(new String[]{"put ring on", "put the ring on", "wear the ring", "wear ring"}),
-        TAKE_OFF(new String[]{"take off the ring","take off ring", "take the ring off", "remove the ring", "remove ring"}),
-        PICK_UP(new String[]{"pick up ring","pick up the ring", "take the ring", "take ring"});
+        TAKE_OFF(new String[]{"take off the ring", "take off ring", "take the ring off", "remove the ring", "remove ring"}),
+        PICK_UP(new String[]{"pick up ring", "pick up the ring", "take the ring", "take ring"});
 
         private String[] possibleDenominations;
 
@@ -63,7 +63,7 @@ public class TheOneRing extends Item implements SpecificCommandHandler {
                 takeOff(game);
                 break;
             case PICK_UP:
-                if (inInventory){
+                if (inInventory) {
                     return false; //if the ring is already picked up, no need to handle it in TheOneRing. The general pickUp method can just handle the command.
                 }
                 pickUp(game);
@@ -89,11 +89,9 @@ public class TheOneRing extends Item implements SpecificCommandHandler {
             game.setInvisibility(false);
             ringOn = false;
             System.out.println("You are not invisible anymore. Because you have taken off the Ring.");
-        }
-        else if(!inInventory){
+        } else if (!inInventory) {
             System.out.println("You first need to pick up the ring before you can take it off.");
-        }
-        else{
+        } else {
             System.out.println("You first need to wear the ring before you can take it off.");
         }
     }
@@ -102,19 +100,19 @@ public class TheOneRing extends Item implements SpecificCommandHandler {
 
         System.out.println("The ring is the most valuable item. If you want to gain it, you should first solve 3 riddles correctly.");
 
-        String[] riddles=new String[]{" First riddle: What has roots as nobody sees, \n Is taller than trees, \n Up, up it goes, \n And yet it never grows?","Second riddle: Voiceless it cries, \n Wingless it flutters, \n Toothless it bites, \n Mouthless it mutters","Third riddle: It cannot be seen, cannot be felt, \n Cannot be heard, cannot be smelt. \n It lies behind stars and under hills, \n And empty holes it fills. \n It comes first and follows after, \n Ends life, kills laughter."};
+        String[] riddles = new String[]{" First riddle: What has roots as nobody sees, \n Is taller than trees, \n Up, up it goes, \n And yet it never grows?", "Second riddle: Voiceless it cries, \n Wingless it flutters, \n Toothless it bites, \n Mouthless it mutters", "Third riddle: It cannot be seen, cannot be felt, \n Cannot be heard, cannot be smelt. \n It lies behind stars and under hills, \n And empty holes it fills. \n It comes first and follows after, \n Ends life, kills laughter."};
 
         Scanner input = new Scanner(System.in);
-        String[][] correctAnswers = new String[][]{{"a mountain","mountain","mountains","the mountain"},{ "wind","the wind","a wind"}, {"darkness","the darkness","the dark","dark"}};
+        String[][] correctAnswers = new String[][]{{"a mountain", "mountain", "mountains", "the mountain"}, {"wind", "the wind", "a wind"}, {"darkness", "the darkness", "the dark", "dark"}};
 
-        for (int i=0;i< riddles.length;i++) {
+        for (int i = 0; i < riddles.length; i++) {
             System.out.println(riddles[i]);
             while (true) {
                 String answer = input.nextLine().trim().toLowerCase();
-                boolean correct=false;
-                for (String correctAnswer: correctAnswers[i]){
-                    if(answer.equals(correctAnswer)){ //check if the inputted answer corresponds to one of the correct answers.
-                        correct=true;
+                boolean correct = false;
+                for (String correctAnswer : correctAnswers[i]) {
+                    if (answer.equals(correctAnswer)) { //check if the inputted answer corresponds to one of the correct answers.
+                        correct = true;
                         break;
                     }
                 }

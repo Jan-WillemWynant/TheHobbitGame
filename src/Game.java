@@ -598,7 +598,14 @@ public class Game {
      * Method displays a general help message.
      */
     public void help() {
-        //
+        //print the most general part of the game
+        System.out.println("You are Bilbo Baggins, a hobbit, and you are on a quest with a company of dwarves to reclaim their homeland on the Lonely Mountain. Unfortunately, you have lost the company of dwarves.\nAs Bilbo Baggins, you know the following things: the dwarves will meet atop the Lonely Mountain at the last light of Durin’s day, which is in 32 days. It is your goal to join them.\n");
+        System.out.println("Many obstacles and perils lie ahead, and you will need to pick up tools and encounter friends and foes to bring your journey to a good end. \nYou can always look at what is in your pockets by typing ‘inventory’.\n");
+        System.out.println("In order to travel ‘north’, ‘east’, and so forth, you can type ‘travel north’, ‘travel east’ and so on. Each time you travel north or in another direction, it costs you a day. It is therefore wise to first ‘look north’, ‘look east’… before travelling. \nYou can examine the item by typing 'examine' and then writing the name of the item. ");
+        System.out.println("Some items and some specific locations have their own specific commands.");
+        System.out.println("Remember that there's only " + daysLeft + "days left for you.");
+        System.out.println("You can at any moment type ‘help’ to get information on the possible commands.\nGood luck on your journey!");
+
     }
 
     /*
