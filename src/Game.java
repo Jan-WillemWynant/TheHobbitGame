@@ -576,7 +576,12 @@ public class Game {
      */
     public void talkToCharacter(GameCharacter character) {
         if (character.canTalk()) {
-            System.out.println(character.getDialogue());
+            if (!invisible) {
+                System.out.println(character.getDialogue());
+            }
+            else {
+                System.out.println("You are invisible right now. You cannot talk with anyone while you are invisible.");
+            }
         } else {
             System.out.println("This character can't talk.");
         }
@@ -610,6 +615,10 @@ public class Game {
 
     public void increaseStrength(int amount) {
         strengthLevel += amount;
+    }
+
+    public void setInvisibility(boolean invisible) {
+        this.invisible = invisible;
     }
 
 }
