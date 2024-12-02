@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Random;
 
 public class Game {
     private Location currentLocation; //the current location the player is in.
@@ -9,6 +10,7 @@ public class Game {
     private int daysLeft; //the days the player has left to complete the game (i.e. reach Erebor).
     private int strengthLevel; //the current strength level of the player. Determines the chances of winning a fight against orcs (e.g. strengthLevel=10 means a 10% chance of winning a fight with orcs).
     private boolean invisible; //boolean which denotes whether player is currently invisible.
+    Location respawnLocation; //this is the location where the player will have to continue the game from if he loses a fight with orcs.
 
     //the enum GeneralCommand will hold the general commands which are handled in the Game class (such as 'travel', 'look' etc.).
     private enum GeneralCommand {
@@ -147,6 +149,8 @@ public class Game {
         //set descriptions of Rivendell
         rivendell.setDescription("Nestled in a deep, hidden valley, Rivendell feels like a sanctuary carved from the heart of the world. Tall, graceful trees line the paths, \ntheir leaves shimmering in the soft light that seems to glow from everywhere and nowhere at once. The sound of gentle waterfalls fills the air, mingling with the faint notes of distant, melodic voices. \nThe buildings, elegant and timeless, seem to blend into the natural beauty around them, as though grown rather than built. This place feels safe, ancient, and touched by a quiet magic.");
         rivendell.setDescriptionFromAfar("A valley seems to shimmer with a gentle light, nestled between towering cliffs and lush greenery. You can make out the glint of waterfalls cascading down the rocks, their soft spray catching the sunlight. \nThe buildings are barely visible, blending seamlessly with the trees and the land, as though the valley itself were alive and welcoming.");
+        //set rivendell as the respawn location.
+        respawnLocation=rivendell;
 
         //add the two non-reachable locations Angmar and Misty mountains as neighboring locations to Rivendell.
         Location angmar = new Location("Witch-Kingdom of Angmar");
@@ -524,7 +528,21 @@ public class Game {
     }
 
     private void fightWithOrcs() {
-        //
+        System.out.println("Dangerously, a pack of orcs on wargs roams these lands. They smell you and make their way to attack you.\n");
+
+        //the outcome of the fight depends on chance. The higher the strengthLevel of the player, the higher his chance of survival.
+        Random rand = new Random();
+        int randomNumber=rand.nextInt(100); //gives a random number between O and 100.
+        if (randomNumber<strengthLevel){ //if the random number is lower than the strength level of the player, the player wins the fight. Otherwise, he loses.
+            //if he wins the fight, nothing happens. He can stay in the location he traveled to.
+            System.out.println("Miraculously, you are able to hold off the orcs for a little while and near-fatally wound their leader. They retreat and leave you be, for now. \nIt would be wise to travel away from these lands, and avoid these lands in the future, as you now know orcs are present in this area of Middle-Earth.");
+        }
+        else{ //the player loses
+            System.out.println("Without remorse, they viciously beat, cut and maul you, and eventually leave you for dead. Fortunately, a friendly Great Eagle in the sky notices you, and gently picks you up. As you dangle between life and death, he transports you to Rivendell, an Elvish settlement. \nThe Elvish doctors start treating you with their immaculate mastery and otherworldly knowledge. After five days of experiencing the wonders of Elvish medicine and getting back to strength, you finally are able to stand on your own feet again and overlook the valley of Rivendell.");
+            currentLocation=respawnLocation; //the player is transported to rivendell.
+            daysLeft=daysLeft-5; //it takes the player five days to heal.
+        }
+
     }
 
     /*
