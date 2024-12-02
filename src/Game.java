@@ -68,7 +68,7 @@ public class Game {
             System.out.println("Do you wish to restart the game?");
             //check the player's response
             while (true) {
-                String yesOrNo = input.nextLine().toLowerCase();
+                String yesOrNo = input.nextLine().trim().toLowerCase();
                 if (yesOrNo.equals("yes")) { //if player replies yes, restart the game (i.e. continue with the outer while loop).
                     break;
                 } else if (yesOrNo.equals("no")) { //if the player replies no, return (which effectively breaks the outer while loop).
@@ -227,7 +227,7 @@ public class Game {
         doorsOfDurin.addNeighboringLocation(Direction.EAST, moria, false); //the beginning setting is that the player cannot travel from the doorsOfDurin to Moria (as the door is initially closed).
 
         //set the descriptions of Moria, add the Ring as an item, and add neighboring locations.
-        moria.setDescription("The vast, shadowed halls of Moria stretch endlessly before you, their grandeur both awe-inspiring and unsettling. Massive stone pillars rise like ancient trees, supporting a ceiling lost in darkness above. The air is heavy and cool, carrying the faint echoes of long-forgotten footsteps. As you walk through these halls, at the base of one of these pillars, you see a small golden ring, which seems to shimmer despite the lack of light source, as if it came straight out of the fire it was forged in. The only rays of light in this place seem to come through the gate on the east."); //this is the initial description. Once the doorsOfDurin are opened, the dynamic doorsOfDurin will adjust this description.
+        moria.setDescription("The vast, shadowed halls of Moria stretch endlessly before you, their grandeur both awe-inspiring and unsettling. Massive stone pillars rise like ancient trees, supporting a ceiling lost in darkness above. The air is heavy and cool, carrying the faint echoes of long-forgotten footsteps. \nAs you walk through these halls, at the base of one of these pillars, you see a small golden ring, which seems to shimmer despite the lack of light source, as if it came straight out of the fire it was forged in. The only rays of light in this place seem to come through the gate on the east."); //this is the initial description. Once the doorsOfDurin are opened, the dynamic doorsOfDurin will adjust this description.
         moria.setDescriptionFromAfar("Through the gate at the base of the Misty Mountains, you see nothing but vast dark halls.");
         Location darkHalls = new Location("Dark Halls");
         darkHalls.setDescriptionFromAfar("You see nothing but dark halls.");
@@ -310,7 +310,8 @@ public class Game {
         laketown.addNeighboringLocation(Direction.WEST, lake, false);
 
         Location erebor = new Location("Erebor");
-        laketown.addNeighboringLocation(Direction.NORTH, erebor, true); //Erebor only needs a descriptionFromAfar since once Erebor is reached, the game is finished.
+        laketown.addNeighboringLocation(Direction.NORTH, erebor, true);
+        erebor.setDescription("You stand atop Erebor, the Lonely Mountain, as the dwarves all give you big, squeezing hugs.");
         erebor.setDescriptionFromAfar("Erebor, the Lonely Mountain, rises like a dark crown from the surrounding plains, its jagged peak looming against the sky. The dragon Smaug has awakened though. \nYou will have to find a way to get past him to the Dwarves atop the mountain unseen.");
 
     }
@@ -489,7 +490,7 @@ public class Game {
                         Scanner yesOrNoInput = new Scanner(System.in);
                         System.out.println("You start going " + direction.getDirectionName() + ", but as you approach, your blade starts glowing blue.\nDo you wish to still travel " + direction.getDirectionName() + "?");
                         while (true) {
-                            String yesOrNo = yesOrNoInput.nextLine().toLowerCase();
+                            String yesOrNo = yesOrNoInput.nextLine().trim().toLowerCase();
                             if (yesOrNo.equals("no")) { //if player replies no, we don't go through with the travel.
                                 System.out.println("You stay in " + currentLocation.getName() + ".");
                                 return;
@@ -571,7 +572,11 @@ public class Game {
      */
     public void talkToCharacter(GameCharacter character) {
         if (character.canTalk()) {
-            System.out.println(character.getDialogue());
+            if (!invisible) {
+                System.out.println(character.getDialogue());
+            } else {
+                System.out.println("You are invisible right now. You cannot talk with anyone while you are invisible.");
+            }
         } else {
             System.out.println("This character can't talk.");
         }
@@ -608,6 +613,13 @@ public class Game {
      */
     public void increaseStrength(int amount) {
         strengthLevel += amount;
+    }
+
+    /*
+     * Method sets the invisibility of the player.
+     */
+    public void setInvisibility(boolean invisible){
+        this.invisible=invisible;
     }
 
     /*
