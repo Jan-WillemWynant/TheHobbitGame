@@ -1,9 +1,21 @@
-public interface SpecificCommandHandler {
-    //This interface enforces that the Location, Item or Character subclass implements a SpecificCommandHandler() method, which can be used to allow location-/item-/character-specific funtionality.
+/**
+ * The interface enforces that a Location, Item or Character subclass implements a SpecificCommandHandler() method,
+ * which can be used to allow location-/item-/character-specific functionality.
+ */
 
-    //the specific commandHandler() method handles commands which represent location-specific, character-specific or item-specific functionality (so not the general commands applicable to every location/character/item)
-    //it takes the inputted command as an argument, and the Game instance.
-    //The Game instance is passed because the specific command might have to interact with the game state (for example 'drink potion' should increase the strengthLevel of the player).
-    //the method also return whether the commandHandler does indeed handle the command (boolean).
-    public abstract boolean specificCommandHandler(String[] command, Game game);
+public interface SpecificCommandHandler {
+
+    /**
+     * The specificCommandHandler() method handles commands which represent location-specific, character-specific
+     * or item-specific functionality (so not the general commands applicable to every location/character/item).
+     * It takes the inputted command as an argument, and the Game instance which calls the specificCommandHandler.
+     * The Game instance is passed because the specific command might have to interact with the game state
+     * (for example 'drink potion' should increase the strengthLevel of the player).
+     * It returns whether the specificCommandHandler() indeed handles the inputted command or not (true or false).
+     *
+     * @param command The inputted command
+     * @param game The game instance which calls the specificCommandHandler() method
+     * @return true if the specificCommandHandler() handles the inputted command, false otherwise
+     */
+    boolean specificCommandHandler(String[] command, Game game);
 }

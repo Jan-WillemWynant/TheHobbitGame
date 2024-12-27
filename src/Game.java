@@ -1,3 +1,36 @@
+/**
+ * The Game class is where the game is initiated, the playing field is generated
+ * and where the gameplay takes place.
+ *
+ * The game state is contained within the Game class, represented by the following variables:
+ * The current location which keeps track of the current location the player is in.
+ * The list of items which the player currently has in inventory.
+ * The amount of days (in the game) the player has left to finish the game (i.e. reach Erebor).
+ * The current strength level of the player.
+ * A flag variable storing whether the player is currently invisible or not.
+ *
+ * The gameplay consists of a loop in which the input of the player is asked.
+ * Based on the input of the player, the Game class executes several methods which update the
+ * game state to reflect the effects of the commands the player has inputted.
+ *
+ * The general actions available to the player, are the following:
+ * To travel north/east...
+ * To look around
+ * To look north/east...
+ * To examine an item
+ * To pick up an item
+ * To talk to a character
+ * To ask for help
+ * To examine what is currently in inventory
+ * All of these general actions are handled in the Game class.
+ *
+ * Some locations, characters, or items have specific functionalities which are only applicable
+ * to that specific location/character/item. For example a location where the player can
+ * climb a tree by typing the command 'climb tree'. These special/specific commands are handled
+ * by these 'special' locations/characters/items. These special locations/characters/items
+ * implement the specificCommandHandler interface.
+ */
+
 import java.util.*;
 
 public class Game {
@@ -6,9 +39,15 @@ public class Game {
     private int daysLeft; //the days the player has left to complete the game (i.e. reach Erebor).
     private int strengthLevel; //the current strength level of the player. Determines the chances of winning a fight against orcs (e.g. strengthLevel=10 means a 10% chance of winning a fight with orcs).
     private boolean invisible; //boolean which denotes whether player is currently invisible.
-    Location respawnLocation; //this is the location where the player will have to continue the game from if he loses a fight with orcs.
+    Location respawnLocation; //this is the location where the player has to continue the game from if he loses a fight with orcs.
 
-    //the enum GeneralCommand will hold the general commands which are handled in the Game class (such as 'travel', 'look' etc.).
+    /**
+     * The enum GeneralCommand holds the general commands which are handled in the Game class (such as 'travel', 'look' etc.).
+     *
+     * A command can have a number of ways the player can invoke them, which are stored in the string array possibleDenominations.
+     * For example, the player can pick up an item both by typing "pick up <item>" and "take <item>".
+     * The GeneralCommand enum provides the functionality of checking an inputted string against the possible denominations of the command.
+     */
     private enum GeneralCommand {
         TRAVEL(new String[]{"travel"}),
         LOOK(new String[]{"look"}),
@@ -20,11 +59,16 @@ public class Game {
 
         private String[] possibleDenominations; //this array of Strings will contain the possible ways a player can invoke a certain command. (for example: "pick up" and "take" both can be used to invoke the PICK_UP command)
 
+        /**
+         * Constructor method.
+         *
+         * @param possibleDenominations The possible denominations with which the player can refer to the command.
+         */
         GeneralCommand(String[] possibleDenominations) {
             this.possibleDenominations = possibleDenominations;
         }
 
-        /*
+        /**
          * This method checks if the command is invoked by the passed String[] command, which is the command inputted by the player in a String[] format.
          * The method returns an integer:
          * It returns -1 if the passed command does not refer to the command.
@@ -32,39 +76,47 @@ public class Game {
          * The positive integer signifies the next index in the String[] array to look at.
          * For example the inputted line 'travel north' invokes the TRAVEL command. The CommandHandler() should look at index 1 after to check the direction to travel in. So 1 is returned by the method.
          * Another example: the inputted line 'speak with gandalf' invokes the TALK_TO command. The commandHandler() should then look at index 2 after to check which character the player wishes to talk to.
+         *
+         * @param command The command inputted by the player as a string array
+         * @return the next index to look at in the inputted string array
          */
         public int commandInvoked(String[] command) {
-            for (String denomination : possibleDenominations) {  //go through the possible denominations which could invoke this generalCommand
+            for (String denomination : possibleDenominations) {  //Go through the possible denominations which could invoke this generalCommand.
                 boolean commandInvoked = true;
-                String[] denominationAsStringArray = denomination.split("\\s+");
+                String[] denominationAsStringArray = denomination.split("\\s+"); //Split the denomination to a string array, with whitespace as the delimiter.
                 if (denominationAsStringArray.length > command.length)
-                    continue; //if the number of words in the possible denomination is higher than the number of words in the inputted line, they definitely don't correspond.
-                for (int i = 0; i < denominationAsStringArray.length; i++) {  //check if all words in the inputted line correspond to the possible denomination
-                    if (!denominationAsStringArray[i].equals(command[i])) { //if one of the words in the inputted line does not match the possible denomination
+                    continue; //If the number of words in the possible denomination is higher than the number of words in the inputted line, they definitely don't correspond.
+                for (int i = 0; i < denominationAsStringArray.length; i++) {  //Check if all words in the inputted line correspond to the possible denomination
+                    if (!denominationAsStringArray[i].equals(command[i])) { //If one of the words in the inputted line does not match the possible denomination, the input does not match with the denomination.
                         commandInvoked = false;
                         break;
                     }
                 }
                 if (commandInvoked)
-                    return denominationAsStringArray.length;  //returns a positive integer, which signifies the next index to inspect in the inputted String[]. (for example if inputted line is 'inspect <item>', next index the commandHandler() should look at is 1, to determine the item.)
+                    return denominationAsStringArray.length;  //Returns a positive integer, which signifies the next index to inspect in the inputted String[]. (for example if inputted line is 'inspect <item>', next index the commandHandler() should look at is 1, to determine the item.)
             }
-            return -1; //signifies that this command was not invoked by the inputted command
+            return -1; //Signifies that this command was not invoked by the inputted command
         }
 
     }
 
-
+    /**
+     * The main method.
+     * This is where the game is initiated.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         while (true) {
             Game game = new Game();
             game.generatePlayingField();
             game.play();
 
-            //if we get to this line, the player has either won or lost the game.
+            //If we get to this line, the player has either won or lost the game.
             //We ask the player now if he wants to restart the game or not.
             Scanner input = new Scanner(System.in);
             System.out.println("Do you wish to restart the game?");
-            //check the player's response
+            //Check the player's response
             while (true) {
                 String yesOrNo = input.nextLine().trim().toLowerCase();
                 if (yesOrNo.equals("yes")) { //if player replies yes, restart the game (i.e. continue with the outer while loop).
@@ -79,26 +131,31 @@ public class Game {
 
     }
 
+    /**
+     * In this method, the actual gameplay takes place.
+     * The method constantly asks the player for his next input,
+     * and executes the right methods based on the inputted command.
+     */
     public void play() {
-        daysLeft = 32;
-        strengthLevel = 10; //initial strength level
-        invisible = false;
-        //Print beginning message.
+        daysLeft = 32; //The player has 32 days to reach Erebor.
+        strengthLevel = 10; //Initial strength level
+        invisible = false; //The player initially is not invisible.
+        //Print beginning message. This beginning message explains the purpose of the game to the player.
         System.out.println("Welcome to Middle-Earth\n");
         System.out.println("You are Bilbo Baggins, a hobbit, and you are on a quest with a company of dwarves to reclaim their homeland on the Lonely Mountain. Unfortunately, you have lost the company of dwarves. \nYou are currently on a hilly field in Dunland. As Bilbo Baggins, you know the following things: the dwarves will meet atop the Lonely Mountain at the last light of Durin’s day, which is in 32 days. It is your goal to join them.\n");
         System.out.println("The Lonely Mountain is far from Dunland, and you will have to traverse many locations to reach your destination. Many obstacles and perils lie ahead, and you will need to pick up tools and encounter friends ánd foes to bring your journey to a good end. \nCurrently, your hobbit’s pockets are rather empty. You only have a pair of binoculars in them. You can always look at what is in your pockets by typing ‘inventory’.\n");
         System.out.println("In order to travel ‘north’, ‘east’, and so forth, you can type ‘travel north’, ‘travel east’ and so on. Each time you travel north or in another direction, it costs you a day. It is therefore wise to first ‘look north’, ‘look east’… before travelling. \nNote, however, that your hobbit’s binoculars are limited and looking in a direction only gives you an estimation of what lies ahead.\n");
         System.out.println("You can at any moment type ‘help’ to get information on the possible commands.\nGood luck on your journey!");
 
-        Scanner input = new Scanner(System.in); //We'll constantly loop and look for the next command
-        while ((!currentLocation.getName().equals("Erebor")) && (daysLeft > 0)) { //if the goal of the game is not reached, or if the player hasn't run out of days
-            String commandText = input.nextLine().toLowerCase(); //take the next command inputted by the user -> immediately convert to lower case to avoid case-sensitivity.
-            String[] command = commandText.trim().split("\\s+"); //remove any potential leading/trailing whitespaces, then split the input on whitespace.
-            commandHandler(command); //handle the actual command
+        Scanner input = new Scanner(System.in); //We'll constantly loop and look for the next command.
+        while ((!currentLocation.getName().equals("Erebor")) && (daysLeft > 0)) { //If the goal of the game is not reached and the player hasn't run out of days, we continue asking for input.
+            String commandText = input.nextLine().toLowerCase(); //Take the next command inputted by the user -> immediately convert to lower case to avoid case-sensitivity.
+            String[] command = commandText.trim().split("\\s+"); //Remove any potential leading/trailing whitespaces, then split the input on whitespace.
+            commandHandler(command); //Handle the actual command
         }
 
-        //if we get to this line, either the player has won the game (Erebor is reached) or he has lost the game (ran out of days)
-        System.out.println(); //just for lay-out purposes
+        //If we get to this line, either the player has won the game (Erebor is reached) or he has lost the game (ran out of days).
+        System.out.println(); //Just for lay-out purposes
         if (currentLocation.getName().equals("Erebor")) {
             System.out.println("Congratulations! You have reached the Dwarves atop Erebor in time. \nYou have won the game.");
         } else {
@@ -107,8 +164,9 @@ public class Game {
 
     }
 
-    /*
+    /**
      *This method generates the playing field, i.e. the map of Middle-Earth this game operates in.
+     * It also initializes the starting location of the player, and the inventory with which the player starts.
      *In general, the process will be as follows:
      *The method starts from the starting location (Dunland), adds all its neighboring locations.
      *Then, the method proceeds with one of these neighboring locations, adds descriptions/items/characters to this location.
@@ -122,7 +180,7 @@ public class Game {
         dunland.setDescriptionFromAfar("You recognize the grassy hills where not that long ago you woke up lost and alone, after being separated from the dwarves. \nThe fields are as green, and the landscape as desolate, as the last time you roamed through those lands.");
         currentLocation = dunland;  //Dunland will be the starting location of the player.
 
-        itemsInInventory = new ArrayList<Item>();  //intialize the list of items in inventory
+        itemsInInventory = new ArrayList<Item>();  //initialize the list of items in inventory
         Item binoculars = new Item("Binoculars", false);  //add the binoculars Item to the starting inventory.
         binoculars.setDescription("These binoculars allow you to get an estimation of what lies ahead to the north, east... \nType 'look north', 'look east' etc. to use them.");
         itemsInInventory.add(binoculars); //this is the only item the player starts with in their inventory.
@@ -168,6 +226,7 @@ public class Game {
         bree.addNeighboringLocation(Direction.NORTH, untamedHills, false);
         bree.addNeighboringLocation(Direction.SOUTH, enedwaith, true); //add Enedwaith as a neighboring location to Bree.
 
+        //create Radagast and Radagast's potion and add them to Bree.
         GameCharacter radagast = new GameCharacter("Radagast", true);
         radagast.setDialogue("Bilbo, you curious little fellow, why did you wake me up? I'm going back to sleep.");
         bree.addCharacter(radagast);
@@ -224,7 +283,7 @@ public class Game {
         doorsOfDurin.addNeighboringLocation(Direction.NORTH, mistyMountains, false);
         doorsOfDurin.addNeighboringLocation(Direction.SOUTH, mistyMountains, false);
         Location moria = new Location("Moria");
-        doorsOfDurin.addNeighboringLocation(Direction.EAST, moria, false); //the beginning setting is that the player cannot travel from the doorsOfDurin to Moria (as the door is initially closed).
+        doorsOfDurin.addNeighboringLocation(Direction.EAST, moria, false); //The beginning setting is that the player cannot travel from the doorsOfDurin to Moria (as the door is initially closed).
 
         //set the descriptions of Moria, add the Ring as an item, and add neighboring locations.
         moria.setDescription("The vast, shadowed halls of Moria stretch endlessly before you, their grandeur both awe-inspiring and unsettling. Massive stone pillars rise like ancient trees, supporting a ceiling lost in darkness above. The air is heavy and cool, carrying the faint echoes of long-forgotten footsteps. \nAs you walk through these halls, at the base of one of these pillars, you see a small golden ring, which seems to shimmer despite the lack of light source, as if it came straight out of the fire it was forged in. The only rays of light in this place seem to come through the gate on the east."); //this is the initial description. Once the doorsOfDurin are opened, the dynamic doorsOfDurin will adjust this description.
@@ -232,7 +291,7 @@ public class Game {
         Location darkHalls = new Location("Dark Halls");
         darkHalls.setDescriptionFromAfar("You see nothing but dark halls.");
         moria.addNeighboringLocation(Direction.NORTH, darkHalls, false);
-        moria.addNeighboringLocation(Direction.WEST, darkHalls, false); //this overrides the location set by doorsOfDurin previously. Once doorsOfDurin are opened, it sets the connection between the locations again.
+        moria.addNeighboringLocation(Direction.WEST, darkHalls, false); //This overrides the location set by doorsOfDurin previously. Once doorsOfDurin are opened, it adds the connection between the two locations again .
         moria.addNeighboringLocation(Direction.SOUTH, darkHalls, false);
         TheOneRing theOneRing = new TheOneRing();
         theOneRing.setDescription("The One Ring is a simple golden band, unmarked at first glance, yet it seems to shimmer with an unnatural light. Its surface is smooth and flawless, cold to the touch, and unnervingly heavy for its size. \nIn certain light, fiery letters appear etched into the gold, their strange script radiating a sinister, otherworldly power.");
@@ -253,7 +312,7 @@ public class Game {
         Location fangorn = new Location("Fangorn");
         lorien.addNeighboringLocation(Direction.SOUTH, fangorn, true);
 
-        ////set descriptions of Anduin, and add neighboring locations.
+        //set descriptions of Anduin, and add neighboring locations.
         anduinRiver.setDescription("The great Anduin flows wide and steady before you, its waters glimmering under the light and rippling softly with the current. \nAlong the shore, a few wooden boats lie abandoned, their hulls weathered and cracked, as though long-forgotten by their owners.");
         anduinRiver.setDescriptionFromAfar("You see a wide and steady river. You don’t notice a bridge, but you do see a few abandoned wooden boots across the shore.");
         anduinRiver.setHasOrcs(true);
@@ -268,8 +327,8 @@ public class Game {
         anduinRiver.addNeighboringLocation(Direction.EAST, mirkwood, true);
 
         //set descriptions of Fangorn, and add neighboring locations.
-        fangorn.setDescription("The forest looms before you, ancient and brooding, with towering trees whose massive trunks are gnarled and twisted with age. Their dense canopy blocks out much of the light, casting the ground below in deep shadow. \nIt feels alive in a way that is both awe-inspiring and deeply unsettling, as though the trees might move or speak when you’re not looking.");
-        fangorn.setDescriptionFromAfar("A forest rises like a dark, impenetrable wall against the horizon, its towering trees standing close together in defiance of time. \nThe canopy appears dense and shadowy.");
+        fangorn.setDescription("The forest looms before you, ancient and brooding, with towering trees whose massive trunks are gnarled and twisted with age. \nIt feels alive in a way that is both awe-inspiring and deeply unsettling, as though the trees might move or speak when you’re not looking.");
+        fangorn.setDescriptionFromAfar("A forest rises like a dark, impenetrable wall against the horizon, its towering trees standing close together in defiance of time. \nThe canopy appears lush in its greenery.");
 
         fangorn.addNeighboringLocation(Direction.WEST, mistyMountains, false);
         fangorn.addNeighboringLocation(Direction.SOUTH, rohan, true);
@@ -278,7 +337,7 @@ public class Game {
 
         //set descriptions of the Wold, and add neighboring locations.
         theWold.setDescription("The Wold stretches out before you, an endless expanse of rolling grasslands rippling under the breeze. The horizon feels impossibly far, with only a few scattered boulders and shrubs breaking the monotony of the plains. \nYou stand in what appears to be the middle of the plains, on a bridge over the Anduin River.");
-        theWold.setDescriptionFromAfar("A vast, rolling sea of grass, stretching endlessly toward the horizon. The land is open and unbroken, save for a few dark shapes of scattered rocks or distant shrubs. \nYou notice what seems to be a bridge in the middle of the plains.");
+        theWold.setDescriptionFromAfar("A vast, rolling sea of grass, stretching endlessly toward the horizon. The land is open and unbroken, save for a few dark shapes of scattered rocks or distant shrubs. \nYou notice what seems to be a bridge over a river in the middle of the plains.");
         theWold.addNeighboringLocation(Direction.SOUTH, rohan, true);
         Location mordor = new Location("Mordor");
         mordor.setDescriptionFromAfar("Mordor looms dark and menacing, its jagged peaks rising like cruel teeth against a smoky, ash-filled sky. The land beyond appears lifeless and \nbarren, with shadows stretching over its cracked and blackened plains.");
@@ -316,21 +375,25 @@ public class Game {
 
     }
 
-    /*
-     * Takes the inputted line as an array of Strings, and handles the inputted command.
+    /**
+     * The method takes the inputted line as an array of Strings, and handles the inputted command.
      * The method first checks which command is invoked.
      * Then, it calls the right method to execute what the command calls for.
+     *
+     * @param command The line inputted by the player as a string array.
      */
     public void commandHandler(String[] command) {
-        //The hierarchy of handling a command is as follows:
-        //first it is checked whether any of the items in inventory implements SpecificCommandHandler, and if they do, whether the Item handles the inputted command.
-        //After this it is checked whether there are any Item objects in the currentLocation which implement SpecificCommandHandler, and if any of them handle the command inputted.
-        //Then it is checked whether any Character objects which implement SpecificCommandHanlder, handle the inputted command.
-        //Then it is checked if the currentLocation implements SpecificCommandHandler and if so, whether it handles the inputted command.
-        //If none of the aforementioned, handle the command, it is checked if it is one of the general commands, and thus handled in Game itself.
-        //This also means that commands can be 'overloaded'. If a specific location requires another functionality for example 'look north', this can be done by handling 'look north' in the Location object (provided the subclass implements SpecificCommandHandler), as this specific command will be checked first.
+        /*
+         *The hierarchy of handling a command is as follows:
+         * First it is checked whether any of the items in inventory implement SpecificCommandHandler, and if they do, whether the Item handles the inputted command.
+         * After this it is checked whether there are any Item objects in the currentLocation which implement SpecificCommandHandler, and if any of them handle the command inputted.
+         * Then it is checked whether any Character objects which implement SpecificCommandHandler, handle the inputted command.
+         * Then it is checked if the currentLocation implements SpecificCommandHandler and if so, whether it handles the inputted command.
+         * If none of the aforementioned, handle the command, it is checked if it is one of the general commands, and thus handled in Game itself.
+         * This also means that commands can be 'overloaded'. If a specific location requires another functionality for for example 'look north', this can be done by handling 'look north' in the Location object (provided the subclass implements SpecificCommandHandler), as this specific command will be checked first.
+         */
 
-        for (Item item : itemsInInventory) { //go through the items in inventory, check if any of them implement SpecificCommandHandler and lastly, check if any of them handle the inputted command.
+        for (Item item : itemsInInventory) { //Go through the items in inventory, check if any of them implement SpecificCommandHandler and lastly, check if any of them handle the inputted command.
             if (item instanceof SpecificCommandHandler) {
                 if (((SpecificCommandHandler) item).specificCommandHandler(command, this)) {
                     return; //If the Item has handled the command, we don't need to further handle anything, so we can return.
@@ -338,7 +401,7 @@ public class Game {
             }
         }
 
-        for (Item item : currentLocation.getItemsInLocation()) { //go through the items in the current location, check if implement SpecificCommandHandler and lastly, check if any of them handle the inputted command.
+        for (Item item : currentLocation.getItemsInLocation()) { //Go through the items in the current location, check if any implement SpecificCommandHandler and lastly, check if any of them handle the inputted command.
             if (item instanceof SpecificCommandHandler) {
                 if (((SpecificCommandHandler) item).specificCommandHandler(command, this)) {
                     return; //If the Item has handled the command, we don't need to further handle anything, so we can return.
@@ -346,7 +409,7 @@ public class Game {
             }
         }
 
-        for (GameCharacter character : currentLocation.getCharactersInLocation()) { //go through the characters in the current location, check if any of them implement SpecificCommandHandler and lastly, check if any of them handle the inputted command.
+        for (GameCharacter character : currentLocation.getCharactersInLocation()) { //Go through the characters in the current location, check if any of them implement SpecificCommandHandler and lastly, check if any of them handle the inputted command.
             if (character instanceof SpecificCommandHandler) {
                 if (((SpecificCommandHandler) character).specificCommandHandler(command, this)) {
                     return; //If the Character has handled the command, we don't need to further handle anything, so we can return.
@@ -354,47 +417,49 @@ public class Game {
             }
         }
 
-        if (currentLocation instanceof SpecificCommandHandler) {
+        if (currentLocation instanceof SpecificCommandHandler) { //Lastly, we check if the current location handles any specific commands.
             if (((SpecificCommandHandler) currentLocation).specificCommandHandler(command, this)) {
-                return; //if command is handled in the currentLocation, no need to further handle it. -> should return
+                return; //If command is handled in the currentLocation, no need to further handle it. -> should return
             }
         }
 
-        //if we get to this line, the inputted command can only potentially still be a general command.
+        //If we get to this line, the inputted command can only potentially still be a general command.
 
         GeneralCommand inputCommand = null;
 
-        for (GeneralCommand generalCommand : GeneralCommand.values()) {
-            int nextIndexToInspect; //this integer will denote the next index to look at in the String[] array of the inputted command
-            if ((nextIndexToInspect = generalCommand.commandInvoked(command)) > 0) { //if this is true, the inputted command refers to this generalCommand. Else commandInvoked() would have returned -1, which denotes the inputted command does not refer to this generalCommand.
+        for (GeneralCommand generalCommand : GeneralCommand.values()) { //Go through the general commands, and check if any of them is invoked by the inputted line.
+            int nextIndexToInspect; //This integer will denote the next index to look at in the String[] array of the inputted command.
+            if ((nextIndexToInspect = generalCommand.commandInvoked(command)) > 0) { //If this is true, the inputted command refers to this generalCommand. Else commandInvoked() would have returned -1, which signals the inputted command does not refer to this generalCommand.
                 inputCommand = generalCommand;
                 switch (inputCommand) {
 
                     case TRAVEL:
-                        if (command.length <= nextIndexToInspect) { //this would mean the player inputted 'travel' or 'go' and nothing else.
+                        if (command.length <= nextIndexToInspect) { //This would mean the player inputted 'travel' and nothing else.
                             System.out.println("You must type 'travel' plus a direction ('north','east','south' or 'west') to travel somewhere.");
                             return;
                         }
-                        for (Direction direction : Direction.values()) {
-                            if ((command[nextIndexToInspect].equals(direction.getDirectionName()))) { //checks if direction player wants to travel in is 'north','east','south' or 'west'.
-                                travel(direction);
+                        for (Direction direction : Direction.values()) { //Go through the directions and check which one the player wants to travel to.
+                            if ((command[nextIndexToInspect].equals(direction.getDirectionName()))) { //Checks if direction player wants to travel in is 'north','east','south' or 'west'.
+                                travel(direction); //call the travel() method with the inputted direction and return.
                                 return;
                             }
                         }
+                        //If we get to this line, player has typed in 'travel' plus something else than a direction. So we point out how to use the travel command with a message.
                         System.out.println("You must type 'travel' plus a direction ('north','east','south' or 'west') to travel somewhere.");
                         return;
 
                     case LOOK:
-                        if (command.length <= nextIndexToInspect) { //this would mean the player inputted just 'look', so we look around by calling look().
-                            look();
+                        if (command.length <= nextIndexToInspect) { //This would mean the player inputted just 'look', so we look around by calling look().
+                            look(); //call the general look() method and return.
                             return;
                         }
-                        for (Direction direction : Direction.values()) {
-                            if ((command[nextIndexToInspect].equals(direction.getDirectionName()))) { //checks if direction player wants to travel in is 'north','east','south' or 'west'.
-                                look(direction);
+                        for (Direction direction : Direction.values()) { //Go through the directions and check which one the player wants to look in.
+                            if ((command[nextIndexToInspect].equals(direction.getDirectionName()))) { //Checks if direction player wants to look in is 'north','east','south' or 'west'.
+                                look(direction); //call the look() method with the inputted direction and return.
                                 return;
                             }
                         }
+                        //If we get to this line, player has typed in 'look' plus something else than a direction. So we point out how to use the look command with a message.
                         System.out.println("You must type 'look' plus a direction ('north','east','south' or 'west') to look in a certain direction.");
                         return;
 
@@ -404,16 +469,16 @@ public class Game {
                             return;
                         }
                         //Now we must check if the player wants to examine an item in inventory, or an item in the currentLocation.
-                        for (Item item : itemsInInventory) {  //go through the items in inventory.
-                            if (item.refersToItem(Arrays.copyOfRange(command, nextIndexToInspect, command.length))) {  //check if player referred to an item in the inventory. //For this we pass the rest of the String[] command to the .refersToItem() method.
-                                examine(item);
+                        for (Item item : itemsInInventory) {  //Go through the items in inventory.
+                            if (item.refersToItem(Arrays.copyOfRange(command, nextIndexToInspect, command.length))) {  //Check if player referred to an item in the inventory. For this we pass the rest of the String[] command to the .refersToItem() method.
+                                examine(item); //call the examine() method with the inputted item and return.
                                 return;
                             }
                         }
 
-                        for (Item item : currentLocation.getItemsInLocation()) {    //go through the items in the current location.
-                            if (item.refersToItem(Arrays.copyOfRange(command, nextIndexToInspect, command.length))) { //check if player referred to an in item in the current location. //For this we pass the rest of the String[] command to the .refersToItem() method.
-                                examine(item);
+                        for (Item item : currentLocation.getItemsInLocation()) {    //Go through the items in the current location.
+                            if (item.refersToItem(Arrays.copyOfRange(command, nextIndexToInspect, command.length))) { //Check if player referred to an in item in the current location. For this we pass the rest of the String[] command to the .refersToItem() method.
+                                examine(item); //call the examine() method with the inputted item and return.
                                 return;
                             }
                         }
@@ -427,9 +492,9 @@ public class Game {
                             return;
                         }
 
-                        for (Item item : currentLocation.getItemsInLocation()) { //go through the items in the current location.
-                            if (item.refersToItem(Arrays.copyOfRange(command, nextIndexToInspect, command.length))) { //check if player referred to an in item in the current location. //For this we pass the rest of the String[] command to the .refersToItem() method.
-                                pickUp(item);
+                        for (Item item : currentLocation.getItemsInLocation()) { //Go through the items in the current location.
+                            if (item.refersToItem(Arrays.copyOfRange(command, nextIndexToInspect, command.length))) { //Check if player referred to an in item in the current location. For this we pass the rest of the String[] command to the .refersToItem() method.
+                                pickUp(item); //call the pickUp() method with the inputted item and return.
                                 return;
                             }
                         }
@@ -443,9 +508,9 @@ public class Game {
                             return;
                         }
 
-                        for (GameCharacter character : currentLocation.getCharactersInLocation()) {
+                        for (GameCharacter character : currentLocation.getCharactersInLocation()) { //Go through the characters in the current location, and check if the player referred to any of them.
                             if (command[nextIndexToInspect].equals(character.getName().toLowerCase())) {
-                                talkToCharacter(character);
+                                talkToCharacter(character); //call the talkToCharacter() method with the inputted character and return.
                                 return;
                             }
                         }
@@ -457,7 +522,7 @@ public class Game {
                         if (command.length <= nextIndexToInspect) { //this would mean the player inputted 'help' and nothing else.
                             help();
                             return;
-                        } else if (command[nextIndexToInspect].equals("directions")) { // if the player inputted 'help directions', we call the helpWithDirections() method.
+                        } else if (command[nextIndexToInspect].equals("directions")) { // if the player inputted 'help directions', we call the helpWithDirections() method. This method displays the directions the player can travel in from the current location.
                             helpWithDirections();
                             return;
                         } else { //if the player typed 'help' plus something else, we just display the general help() message.
@@ -474,13 +539,22 @@ public class Game {
             }
         }
 
-        //if you get to this line, the inputted command is not recognized by any of the commandHandlers.
+        //If we get to this line, the inputted command is not recognized by any of the commandHandlers.
         System.out.println("This command is not recognized. You can type 'help' to get more information on the possible commands.");
 
     }
 
-    /*
+    /**
      * Takes a direction as argument, and executes the travelling to that direction.
+     *
+     * It first checks if the player can travel in the specified direction.
+     * If that direction is reachable, it updates the current location to the location which the player travels to, and decreases the days he has left to complete the game by one.
+     * In two cases the travelling is not as straightforward:
+     * 1) If the location the player wants to travel to, has orcs. If the player has already picked up the Elvish sword, he is warned and asked if he still wants to travel in that direction.
+     *    If the player arrives in a location with orcs, the method also calls the fightWithOrcs() method, which handles the fighting with orcs.
+     * 2) If the location the player wants to travel to, is Erebor. The player can only arrive in Erebor is he is invisible (otherwise the dragon Smaug throws the player back in the lake).
+     *
+     * @param direction The direction the player wants to travel in
      */
     public void travel(Direction direction) {
 
@@ -514,17 +588,24 @@ public class Game {
             }
 
             currentLocation = currentLocation.getNeighboringLocation(direction); //update the currentLocation
-            currentLocation.arrive();
+            currentLocation.arrive(); //call the arrive method on the new current location (this prints the name of the location and the description).
             daysLeft--; //assuming every step north, east etc. takes 1 day
 
-            if (currentLocation.hasOrcs()) {
+            if (currentLocation.hasOrcs()) { //if the new current location has orcs, we call the fightWithOrcs() method.
                 fightWithOrcs();
             }
+
         } else {
             System.out.println("You can not travel in this direction.\nType 'help directions' to find out what directions you can travel to from your current location.");
         }
     }
 
+    /**
+     * Method handles the fighting with orcs:
+     * Whether the player wins or loses, is randomly drawn (with a role for the strengthLevel variable).
+     * If the player wins, nothing happens and the player can stay in the location he currently in.
+     * If the player loses, he almost dies and is transported in Rivendell, from where he has to continue the game.
+     */
     private void fightWithOrcs() {
         System.out.println("Dangerously, a pack of orcs on wargs roams these lands. They smell you and make their way to attack you.\n");
 
@@ -535,15 +616,18 @@ public class Game {
             //if he wins the fight, nothing happens. He can stay in the location he traveled to.
             System.out.println("Miraculously, you are able to hold off the orcs for a little while and near-fatally wound their leader. They retreat and leave you be, for now. \nIt would be wise to travel away from these lands, and avoid these lands in the future, as you now know orcs are present in this area of Middle-Earth.");
         } else { //the player loses
-            System.out.println("Without remorse, they viciously beat, cut and maul you, and eventually leave you for dead. Fortunately, a friendly Great Eagle in the sky notices you, and gently picks you up. As you dangle between life and death, he transports you to Rivendell, an Elvish settlement. \nThe Elvish doctors start treating you with their immaculate mastery and otherworldly knowledge. After five days of experiencing the wonders of Elvish medicine and getting back to strength, you finally are able to stand on your own feet again and overlook the valley of Rivendell.");
-            currentLocation = respawnLocation; //the player is transported to rivendell.
+            System.out.println("Without remorse, they viciously beat, cut and maul you, and eventually leave you for dead. Fortunately, a friendly Great Eagle in the sky notices you, and gently picks you up. \nAs you dangle between life and death, he transports you to Rivendell, an Elvish settlement. The Elvish doctors start treating you with their immaculate mastery and otherworldly knowledge. \nAfter five days of experiencing the wonders of Elvish medicine and getting back to strength, you finally are able to stand on your own feet again and overlook the valley of Rivendell.");
+            currentLocation = respawnLocation; //the player is transported to the respawn location (i.e. rivendell).
+            respawnLocation.setAlreadyVisited(true);
             daysLeft = daysLeft - 5; //it takes the player five days to heal.
         }
 
     }
 
-    /*
+    /**
      * Takes a direction as argument, and executes the looking to that direction.
+     *
+     * @param direction The direction the player wants to look to
      */
     public void look(Direction direction) {
         System.out.println("To the " + direction.getDirectionName() + " you see:");
@@ -552,7 +636,7 @@ public class Game {
         System.out.println(currentLocation.getNeighboringLocation(direction).getDescriptionFromAfar());
     }
 
-    /*
+    /**
      * Executes the looking around.
      */
     public void look() {
@@ -561,18 +645,22 @@ public class Game {
         System.out.println(currentLocation.getDescription());
     }
 
-    /*
+    /**
      * Takes an item as argument, and executes the examining of the item.
+     *
+     * @param item The item the player wants to examine
      */
     public void examine(Item item) {
         System.out.println(item.getDescription());
     }
 
-    /*
+    /**
      * Takes an item as argument, and executes the picking up of the item.
+     *
+     * @param item The item the player wants to pick up
      */
     public void pickUp(Item item) {
-        if (item.canPickUp()) {
+        if (item.canPickUp()) { //check if the item is an item the player can pick up.
             itemsInInventory.add(item);
             System.out.println("You have picked up " + item.getName() + ".");
             item.setInInventory(true);
@@ -582,14 +670,16 @@ public class Game {
         }
     }
 
-    /*
+    /**
      * Takes a character as argument, and executes the talking to the character.
+     *
+     * @param character The character the player wants to talk to.
      */
     public void talkToCharacter(GameCharacter character) {
         if (character.canTalk()) {
             if (!invisible) {
                 System.out.println(character.getDialogue());
-            } else {
+            } else { //If the player is invisible, he cannot talk to anyone.
                 System.out.println("You are invisible right now. You cannot talk with anyone while you are invisible.");
             }
         } else {
@@ -597,7 +687,7 @@ public class Game {
         }
     }
 
-    /*
+    /**
      * Displays a list of the items currently in inventory.
      */
     public void displayInventory() {
@@ -605,11 +695,7 @@ public class Game {
         System.out.println(itemsInInventory);
     }
 
-    public boolean isItemInInventory(Item item) {
-        return itemsInInventory.contains(item);
-    }
-
-    /*
+    /**
      * Method displays a general help message.
      */
     public void help() {
@@ -622,7 +708,7 @@ public class Game {
         System.out.println("You can at any moment type ‘help’ to get information on the possible commands.\nGood luck on your journey!");
     }
 
-    /*
+    /**
      * Method displays the directions the player can travel in from the current location.
      */
     public void helpWithDirections() {
@@ -635,21 +721,21 @@ public class Game {
         System.out.println("You can travel " + String.join(", ", reachableDirection) + ".");
     }
 
-    /*
+    /**
      * Method increases the strength level of the player with a certain amount.
      */
     public void increaseStrength(int amount) {
         strengthLevel += amount;
     }
 
-    /*
+    /**
      * Method sets the invisibility of the player.
      */
     public void setInvisibility(boolean invisible) {
         this.invisible = invisible;
     }
 
-    /*
+    /**
      * Method returns the items the player has in inventory currently.
      */
     public List<Item> getItemsInInventory() {
