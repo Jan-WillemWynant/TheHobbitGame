@@ -142,7 +142,7 @@ public class Game {
         invisible = false; //The player initially is not invisible.
         //Print beginning message. This beginning message explains the purpose of the game to the player.
         System.out.println("Welcome to Middle-Earth\n");
-        System.out.println("You are Bilbo Baggins, a hobbit, and you are on a quest with a company of dwarves to reclaim their homeland on the Lonely Mountain. Unfortunately, you have lost the company of dwarves. \nYou are currently on a hilly field in Dunland. As Bilbo Baggins, you know the following things: the dwarves will meet atop the Lonely Mountain at the last light of Durin’s day, which is in 32 days. It is your goal to join them.\n");
+        System.out.println("You are Bilbo Baggins, a hobbit, and you are on a quest with a company of dwarves to reclaim their homeland on Erebor, also known as the Lonely Mountain. Unfortunately, you have lost the company of dwarves. \nYou are currently on a hilly field in Dunland. As Bilbo Baggins, you know the following things: the dwarves will meet atop the Lonely Mountain at the last light of Durin’s day, which is in 32 days. It is your goal to join them.\n");
         System.out.println("The Lonely Mountain is far from Dunland, and you will have to traverse many locations to reach your destination. Many obstacles and perils lie ahead, and you will need to pick up tools and encounter friends ánd foes to bring your journey to a good end. \nCurrently, your hobbit’s pockets are rather empty. You only have a pair of binoculars in them. You can always look at what is in your pockets by typing ‘inventory’.\n");
         System.out.println("In order to travel ‘north’, ‘east’, and so forth, you can type ‘travel north’, ‘travel east’ and so on. Each time you travel north or in another direction, it costs you a day. It is therefore wise to first ‘look north’, ‘look east’… before travelling. \nNote, however, that your hobbit’s binoculars are limited and looking in a direction only gives you an estimation of what lies ahead.\n");
         System.out.println("You can at any moment type ‘help’ to get information on the possible commands.\nGood luck on your journey!");
@@ -286,7 +286,7 @@ public class Game {
         doorsOfDurin.addNeighboringLocation(Direction.EAST, moria, false); //The beginning setting is that the player cannot travel from the doorsOfDurin to Moria (as the door is initially closed).
 
         //set the descriptions of Moria, add the Ring as an item, and add neighboring locations.
-        moria.setDescription("The vast, shadowed halls of Moria stretch endlessly before you, their grandeur both awe-inspiring and unsettling. Massive stone pillars rise like ancient trees, supporting a ceiling lost in darkness above. The air is heavy and cool, carrying the faint echoes of long-forgotten footsteps. \nAs you walk through these halls, at the base of one of these pillars, you see a small golden ring, which seems to shimmer despite the lack of light source, as if it came straight out of the fire it was forged in. The only rays of light in this place seem to come through the gate on the east."); //this is the initial description. Once the doorsOfDurin are opened, the dynamic doorsOfDurin will adjust this description.
+        moria.setDescription("The vast, shadowed halls of Moria stretch endlessly before you, their grandeur both awe-inspiring and unsettling. Massive stone pillars rise like ancient trees, supporting a ceiling lost in darkness above. The air is heavy and cool, carrying the faint echoes of long-forgotten footsteps.\nAs you walk through these halls, at the base of one of these pillars, you see a small golden ring, which seems to shimmer despite the lack of light source, as if it came straight out of the fire it was forged in. The only rays of light in this place seem to come through the gate on the east."); //this is the initial description. Once the doorsOfDurin are opened, the dynamic doorsOfDurin will adjust this description.
         moria.setDescriptionFromAfar("Through the gate at the base of the Misty Mountains, you see nothing but vast dark halls.");
         Location darkHalls = new Location("Dark Halls");
         darkHalls.setDescriptionFromAfar("You see nothing but dark halls.");
@@ -297,7 +297,7 @@ public class Game {
         theOneRing.setDescription("The One Ring is a simple golden band, unmarked at first glance, yet it seems to shimmer with an unnatural light. Its surface is smooth and flawless, cold to the touch, and unnervingly heavy for its size. \nIn certain light, fiery letters appear etched into the gold, their strange script radiating a sinister, otherworldly power.");
         theOneRing.setPossibleDenominations(new String[]{"ring", "golden ring", "the ring", "the golden ring"});  //all possible ways we allow the player to refer to the item in the location.
         moria.addItem(theOneRing);
-        moria.setStringToBeRemovedIfItemPickedUp(theOneRing, " As you walk through these halls, at the base of one of these pillars, you see a small golden ring, which seems to shimmer despite the lack of light source, as if it came straight out of the fire it was forged in.");
+        moria.setStringToBeRemovedIfItemPickedUp(theOneRing, "As you walk through these halls, at the base of one of these pillars, you see a small golden ring, which seems to shimmer despite the lack of light source, as if it came straight out of the fire it was forged in. ");
 
         Location lorien = new Location("Lorien");
         moria.addNeighboringLocation(Direction.EAST, lorien, true);
@@ -525,8 +525,8 @@ public class Game {
                         } else if (command[nextIndexToInspect].equals("directions")) { // if the player inputted 'help directions', we call the helpWithDirections() method. This method displays the directions the player can travel in from the current location.
                             helpWithDirections();
                             return;
-                        } else { //if the player typed 'help' plus something else, we just display the general help() message.
-                            help();
+                        } else { //if the player typed 'help' plus something else, we display to the player he can ask general help by typing 'help' and help on directions with 'help directions'.
+                            System.out.println("We do not understand what exactly you need help with. \nYou can get general help by typing 'help' and get help with the directions you can travel in by typing 'help directions'.");
                             return;
                         }
 
@@ -582,7 +582,7 @@ public class Game {
             }
 
             if (currentLocation.getNeighboringLocation(direction).getName().equals("Erebor") && (!invisible)) { //if the player wants to travel to Erebor and is not invisible, the dragon Smaug will notice the player and throw him into the lake (resulting in the player staying in Laketown).
-                System.out.println("You approach Erebor, but the dragon Smaug sees you. He picks you up and throws you into the Lake. You crawl back onto shore in Laketown.\nYou must find a way to get past him unseen.");
+                System.out.println("You approach Erebor, but the dragon Smaug sees you. He picks you up and throws you into the Lake. \nYou crawl back onto shore in Laketown. The ordeal costs you a day.\nYou must find a way to get past him unseen.");
                 daysLeft--; //the ordeal does cost the player a day.
                 return;
             }
@@ -700,8 +700,8 @@ public class Game {
      */
     public void help() {
         //print the most general part of the game
-        System.out.println("You are Bilbo Baggins, a hobbit, and you are on a quest with a company of dwarves to reclaim their homeland on the Lonely Mountain. Unfortunately, you have lost the company of dwarves.\nAs Bilbo Baggins, you know the following things: the dwarves will meet atop the Lonely Mountain at the last light of Durin’s day. It is your goal to join them.\n");
-        System.out.println("Many obstacles and perils lie ahead, and you will need to pick up tools and encounter friends and foes to bring your journey to a good end. \nYou can always look at what is in your pockets by typing ‘inventory’.\n");
+        System.out.println("You are Bilbo Baggins, a hobbit, and you are on a quest with a company of dwarves to reclaim their homeland on the Lonely Mountain. Unfortunately, you have lost the company of dwarves.\nAs Bilbo Baggins, you know the following things: the dwarves will meet atop the Lonely Mountain at the last light of Durin’s day. It is your goal to reach Erebor before then.\n");
+        System.out.println("Many obstacles and perils lie ahead, and you will need to pick up tools and encounter friends and foes to bring your journey to a good end. \nYou can always look at what is in your pockets by typing ‘inventory’. In order to pick up an item, you type 'pick up' plus the name of the item.\n");
         System.out.println("In order to travel ‘north’, for instance, you can type ‘travel north’. Each time you travel north or in another direction, it costs you a day. It is therefore wise to first ‘look north’, ‘look east’… before travelling.\nYou can examine an item by typing 'examine' and then writing the name of the item. You can also talk with other characters by typing 'talk to' and then the name of that specific character.");
         System.out.println("Some items and some locations have their own specific commands.\n");
         System.out.println("Remember that there's only " + daysLeft + " days left for you.\n");

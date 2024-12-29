@@ -36,8 +36,8 @@ public class Mirkwood extends Location implements SpecificCommandHandler {
      * The SpecificCommand enum provides the functionality of checking an inputted string against the possible denominations of the command.
      */
     private enum SpecificCommand {
-        CLIMB_UP(new String[]{"climb up", "climb up tree", "climb tree", "climb the tree", "go up the tree", "go up tree", "go tree up"}),
-        CLIMB_DOWN(new String[]{"climb down","go down","climb down tree","climb down the tree","go down the tree"}),
+        CLIMB_UP(new String[]{"climb up", "climb up tree", "climb tree", "climb a tree", "climb the tree", "go up the tree", "go up tree", "go tree up"}),
+        CLIMB_DOWN(new String[]{"climb down", "go down","climb down tree", "climb down the tree", "climb out of tree", "climb out of the tree", "go down the tree"}),
         TRAVEL(new String[]{"travel"}), //player can only travel is he has regained his sense of direction (and has climbed down the tree again).
         LOOK(new String[]{"look"}); //look functionality depends on whether the player is up the tree or down on the ground.
 
